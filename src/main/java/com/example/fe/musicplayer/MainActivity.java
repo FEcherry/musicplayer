@@ -1,88 +1,63 @@
 package com.example.fe.musicplayer;
 
-import android.media.MediaPlayer;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Toast;
 
-import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
-    private ImageButton mBefore,mStart,mNext,mTxt;
-    private  boolean bisReleased=false;
-    public MediaPlayer mPlayer=new MediaPlayer();
+    private final int SPLASH_DISPLAY_LENGHT = 3000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBefore=(ImageButton) findViewById((R.id.before));
-        mStart=(ImageButton) findViewById((R.id.start));
-        mNext=(ImageButton) findViewById((R.id.next));
-        mTxt=(ImageButton) findViewById((R.id.txt));
-
-        mBefore.setOnClickListener(new ImageButton.OnClickListener()
-        {
-
+        //延时2秒
+        final Intent localIntent = new Intent(this, HomeActivity.class);
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
             @Override
-            public void onClick(View v) {
-
-                try {
-                    if(mPlayer.isPlaying()==true){
-                        mPlayer.reset();
-                    }
-                    mPlayer.setDataSource("/storage/emulated/0/kgmusic/download/邓紫棋 - All About U.mp3");
-                    mPlayer.prepare();
-                    mPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+            public void run() {
+                startActivity(localIntent);
+                MainActivity.this.finish();
             }
-        });
+        };
+        timer.schedule(task, SPLASH_DISPLAY_LENGHT);
 
-        mStart.setOnClickListener(new ImageButton.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if(mPlayer.isPlaying()==true){
-                        mPlayer.pause();
-                    }
-                    mPlayer.setDataSource("/storage/emulated/0/kgmusic/download/邓紫棋 - 偶尔.mp3");
-                    mPlayer.prepare();
-                    mPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        mNext.setOnClickListener(new ImageButton.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if(mPlayer.isPlaying()==true){
-                        mPlayer.reset();
-                    }
-                    mPlayer.setDataSource("/storage/emulated/0/kgmusic/download/邓紫棋 - 是否.mp3");
-                    mPlayer.prepare();
-                    mPlayer.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        //判断网络状态
+        if(!isNetworkAvailable(this)){
+            Toast toast = Toast.makeText(getApplicationContext(), "网络不可用！", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        
 
 
     }
+
+    public boolean isNetworkAvailable(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return (info !=null && info.isAvailable());
+
+    }
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
