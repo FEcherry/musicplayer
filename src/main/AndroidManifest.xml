@@ -19,6 +19,9 @@
         </activity>
 
         <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".Cet4"></activity>
+        <activity android:name=".Cet6"></activity>
+        <activity android:name=".Fun"></activity>
     </application>
 
 
