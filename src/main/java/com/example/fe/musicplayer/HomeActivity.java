@@ -31,8 +31,8 @@ import java.util.List;
 public class HomeActivity extends ActionBarActivity {
 
 //    private PullToRefreshListView pullToRefreshListView;
-    private ListView mlistView;
-    private LayoutInflater inflater;
+    private RefreshListView mlistView;
+//    private LayoutInflater inflater;
     private static String URL="http://www.imooc.com/api/teacher?type=4&num=30";
 
     @Override
@@ -42,21 +42,9 @@ public class HomeActivity extends ActionBarActivity {
 
         new AudioAsyncTask().execute(URL);
 
-        mlistView=(ListView)findViewById(R.id.listview);
+        mlistView=(RefreshListView)findViewById(R.id.listview);
 
 
-
-//        pullToRefreshListView = (PullToRefreshListView) findViewById(R.id.pullToRefreshListView);
-//        pullToRefreshListView.setOnItemClickListener(this);
-//        pullToRefreshListView.setMode(Mode.BOTH);
-//        pullToRefreshListView.getLoadingLayoutProxy(false,true).setRefreshingLabel("正在加载更多");
-//        pullToRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>(){
-//            public void onRefresh(PullToRefreshBase<ListView> refreshView){
-//                String labelString =DateUtils.formatDateTime(getApplicationContext().getApplicationContext(),System.currentTimeMillis(),DateUtils.FORMAT_SHOW_TIME|DateUtils.FORMAT_SHOW_DATE|DateUtils.FORMAT_ABBREV_ALL);
-//                refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(labelString);
-//                new GetDataTask().execute();
-//            }
-//        });
 
     }
 
@@ -125,7 +113,7 @@ public class HomeActivity extends ActionBarActivity {
 
         protected  void onPostExecute(List<AudioBean> audioBean){
             super.onPostExecute(audioBean);
-            AudioAdapter adapter=new AudioAdapter(HomeActivity.this,audioBean);
+            AudioAdapter adapter=new AudioAdapter(HomeActivity.this,audioBean,mlistView);
             mlistView.setAdapter(adapter);
         }
 

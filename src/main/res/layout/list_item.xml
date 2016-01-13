@@ -15,7 +15,8 @@
         android:text="Woman's right when to give birth"
         android:maxLines="2"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp"
+        android:layout_toLeftOf="@+id/imageView"/>
 
 
     <TextView
