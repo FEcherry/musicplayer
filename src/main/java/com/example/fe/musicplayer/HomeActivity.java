@@ -1,12 +1,16 @@
 package com.example.fe.musicplayer;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.view.LayoutInflater;
@@ -28,34 +32,39 @@ import java.util.List;
 /**
  * Created by fe on 16-1-10.
  */
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends Activity implements RefreshListView.IRefreshListener{
 
 //    private PullToRefreshListView pullToRefreshListView;
     private RefreshListView mlistView;
 //    private LayoutInflater inflater;
+    private ArrayList<AudioAdapter.ViewHolder> apk_list;
     private static String URL="http://www.imooc.com/api/teacher?type=4&num=30";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-
-        new AudioAsyncTask().execute(URL);
+        onTitleChanged("神奇的APP",2);
 
         mlistView=(RefreshListView)findViewById(R.id.listview);
+        mlistView.setInterface(this);
 
-
+        new AudioAsyncTask().execute(URL);//执行listview加载任务
+        mlistView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent();
+                intent.setClass(HomeActivity.this,PlayerActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
-
-//    @Override
-//    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Intent intent=new Intent();
-//        intent.setClass(HomeActivity.this,PlayerActivity.class);
-//        startActivity(intent);
-//    }
-
+    @Override
+    protected void onTitleChanged(CharSequence title, int color) {
+        super.onTitleChanged(title, color);
+    }
 
     //将url对应的JSON格式数据转化为我们所封装的AudioBean
     private List<AudioBean> getJsonData(String url){
@@ -103,6 +112,23 @@ public class HomeActivity extends ActionBarActivity {
         }
         return result;
     }
+
+
+
+    //获取最新数据，通知页面显示，通知listview刷新完毕
+    @Override
+    public void onRefresh() {
+        new AudioAsyncTask().execute(URL);
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mlistView.refreshComplete();
+            }
+        }, 1000);
+
+    }
+
 
 
     //实现网络的异步访问

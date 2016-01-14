@@ -8,7 +8,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
         android:layout_centerInParent="true"
         android:gravity="center">
 
@@ -25,11 +24,20 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/arrow"
+        android:id="@+id/arrowDown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
-        android:src="@drawable/refresh_arrow"
+        android:src="@drawable/refresh_arrowdown"
+        android:layout_toLeftOf="@+id/refreshTextView"/>
+
+    <ImageView
+        android:id="@+id/arrowUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:visibility="invisible"
+        android:src="@drawable/refresh_arrowup"
         android:layout_toLeftOf="@+id/refreshTextView"/>
 
     <ProgressBar
@@ -37,6 +45,8 @@
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/refreshTextView"
         android:visibility="gone"/>
 
 </RelativeLayout>

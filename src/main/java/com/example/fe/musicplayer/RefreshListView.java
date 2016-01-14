@@ -7,18 +7,27 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.os.Handler;
 import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 
 /**
  * Created by fe on 16-1-13.
  */
-public class RefreshListView extends ListView implements AbsListView.OnScrollListener {
+public class RefreshListView extends ListView implements AbsListView.OnScrollListener{
 
     View header;//顶部布局文件
     int headerHeight;//顶部布局文件的高度
     int firstVisibleItem;//当前第一个可见的Item的位置
+    int scrollState;//当前滚动状态
     boolean isRemark;//标记，当前是在listview最顶端摁下的
     int startY;//摁下的Ｙ值
 
@@ -26,7 +35,8 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
     final int NONE=0;//正常状态
     final int PULL=1;//提示下拉状态
     final int RELEASE=2;//提示释放状态
-    final int REFLASHING=3;//刷新状态
+    final int REFRESHING=3;//刷新状态
+    IRefreshListener iRefreshListener;//刷新数据的接口
 
 
     public RefreshListView(Context context) {
@@ -52,7 +62,6 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         header=inflater.inflate(R.layout.header,null);
         measureView(header);
         headerHeight=header.getMeasuredHeight();
-        Log.i("tag","headerHeight="+headerHeight);
         topPadding(-headerHeight);
         this.addHeaderView(header);
         this.setOnScrollListener(this);
@@ -83,7 +92,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
+        this.scrollState=scrollState;
     }
 
     @Override
@@ -100,10 +109,22 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                     startY=(int)ev.getY();
                 }
                 break;
+
             case MotionEvent.ACTION_MOVE:
                 onMove(ev);
                 break;
+
             case MotionEvent.ACTION_UP:
+                if(state==RELEASE){
+                    state=REFRESHING;
+                    //加载最新数据
+                    refreshViewByState();
+                    iRefreshListener.onRefresh();
+                }else if(state==PULL){
+                    state=NONE;
+                    isRemark=false;
+                    refreshViewByState();
+                }
                 break;
 
         }
@@ -117,16 +138,105 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         }
         int tempY=(int)ev.getY();
         int space=tempY-startY;
+        int topPadding=space-headerHeight;
         switch (state){
             case NONE:
+                if(space>0){
+                    state=PULL;
+                    refreshViewByState();
+                }
                 break;
+
             case PULL:
+                topPadding(topPadding);
+                if(space>headerHeight+30 && scrollState==SCROLL_STATE_TOUCH_SCROLL){
+                    state=RELEASE;
+                    refreshViewByState();
+                }
                 break;
+
             case RELEASE:
-                break;
-            case NONE:
+                topPadding(topPadding);
+                if(space<headerHeight+30 ){
+                    state=PULL;
+                    refreshViewByState();
+                }else if(space<=0){
+                    state=NONE;
+                    isRemark=false;
+                    refreshViewByState();
+                }
                 break;
         }
+    }
 
+    //根据当前状态，改变界面显示
+    private void refreshViewByState(){
+        TextView tip= (TextView) header.findViewById(R.id.tip);
+        ImageView arrowDown= (ImageView) header.findViewById(R.id.arrowDown);
+        ImageView arrowUp= (ImageView) header.findViewById(R.id.arrowUp);
+        ProgressBar progress= (ProgressBar) header.findViewById(R.id.progress);
+//        RotateAnimation anim=new RotateAnimation(0,180,
+//                RotateAnimation.RELATIVE_TO_SELF,0.5f,
+//                RotateAnimation.RELATIVE_TO_SELF,0.5f);
+//        anim.setDuration(500);
+//        anim.setFillAfter(true);
+//        RotateAnimation anim1=new RotateAnimation(180,0,
+//                RotateAnimation.RELATIVE_TO_SELF,0.5f,
+//                RotateAnimation.RELATIVE_TO_SELF,0.5f);
+//        anim1.setDuration(500);
+//        anim1.setFillAfter(true);
+
+        switch (state) {
+            case NONE:
+//                arrow.clearAnimation();
+                topPadding((-headerHeight));
+                break;
+
+            case PULL:
+                arrowDown.setVisibility(View.VISIBLE);
+                arrowUp.setVisibility(View.GONE);
+                progress.setVisibility(View.GONE);
+                tip.setText("下拉可以刷新！");
+//                arrow.clearAnimation();
+//                arrow.setAnimation(anim1);
+                break;
+
+            case RELEASE:
+                arrowDown.setVisibility(View.GONE);
+                arrowUp.setVisibility(View.VISIBLE);
+                progress.setVisibility(View.GONE);
+                tip.setText("松开可以刷新！");
+//                arrow.clearAnimation();
+//                arrow.setAnimation(anim);
+                break;
+
+            case REFRESHING:
+                topPadding(50);
+                arrowDown.setVisibility(View.GONE);
+                arrowUp.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                tip.setText("正在刷新……");
+                break;
+        }
+    }
+
+    public void setInterface(IRefreshListener iRefreshListener){
+        this.iRefreshListener=iRefreshListener;
+    }
+
+    //获取完数据
+    public void refreshComplete(){
+        state=NONE;
+        isRemark=false;
+        refreshViewByState();
+        TextView lastUpdateTime= (TextView) header.findViewById(R.id.lastupdatetime);
+        SimpleDateFormat format=new SimpleDateFormat("yyyy年MM月dd日hh:mm:ss");
+        Date date=new Date(System.currentTimeMillis());
+        String time=format.format(date);
+        lastUpdateTime.setText(time);
+    }
+
+    public interface  IRefreshListener{
+        public void onRefresh();
     }
 }
