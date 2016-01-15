@@ -1,52 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:paddingTop="10dp" android:paddingBottom="10dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/refreshTextView"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:gravity="center">
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/refreshTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tip"
-            android:text="下拉可以刷新！"/>
+            android:orientation="vertical"
+            android:layout_centerInParent="true"
+            android:gravity="center">
 
-        <TextView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tip"
+                android:text="Pull Down"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/arrowDown"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/refresh_arrowdown"
+            android:layout_toLeftOf="@+id/refreshTextView"/>
+
+        <ImageView
+            android:id="@+id/arrowUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/lastupdatetime"/>
-    </LinearLayout>
+            android:layout_marginRight="8dp"
+            android:visibility="invisible"
+            android:src="@drawable/refresh_arrowup"
+            android:layout_toLeftOf="@+id/refreshTextView"/>
 
-    <ImageView
-        android:id="@+id/arrowDown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:src="@drawable/refresh_arrowdown"
-        android:layout_toLeftOf="@+id/refreshTextView"/>
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_toLeftOf="@+id/refreshTextView"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/arrowUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:visibility="invisible"
-        android:src="@drawable/refresh_arrowup"
-        android:layout_toLeftOf="@+id/refreshTextView"/>
-
-    <ProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@+id/refreshTextView"
-        android:visibility="gone"/>
-
-</RelativeLayout>
+</LinearLayout>

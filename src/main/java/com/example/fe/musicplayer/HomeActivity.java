@@ -14,11 +14,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.view.LayoutInflater;
+import android.widget.TextView;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,7 +34,7 @@ import java.util.List;
 /**
  * Created by fe on 16-1-10.
  */
-public class HomeActivity extends Activity implements RefreshListView.IRefreshListener{
+public class HomeActivity extends Activity implements RefreshListView.IRefreshListener,RefreshListView.ILoadListener{
 
 //    private PullToRefreshListView pullToRefreshListView;
     private RefreshListView mlistView;
@@ -44,10 +46,10 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home);
-        onTitleChanged("神奇的APP",2);
 
         mlistView=(RefreshListView)findViewById(R.id.listview);
-        mlistView.setInterface(this);
+        mlistView.setRefreshListenerInterface(this);
+        mlistView.setLoadListenerInterface(this);
 
         new AudioAsyncTask().execute(URL);//执行listview加载任务
         mlistView.setOnItemClickListener(new OnItemClickListener() {
@@ -118,17 +120,56 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
     //获取最新数据，通知页面显示，通知listview刷新完毕
     @Override
     public void onRefresh() {
-        new AudioAsyncTask().execute(URL);
         Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mlistView.refreshComplete();
+                new AsyncTask<Void,Void,Void>(){
+                    @Override
+                    protected Void doInBackground(Void... params) {
+
+                        return null;
+
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        mlistView.refreshComplete();
+                    }
+                }.execute(new Void[]{});
+
             }
-        }, 1000);
+        }, 2000);
 
     }
 
+    //获取更多数据，通知listview显示
+    @Override
+    public void onLoad() {
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                new AsyncTask<Void,Void,Void>(){
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        mlistView.loadComplete();
+                    }
+                }.execute(new Void[]{});
+
+            }
+        }, 2000);
+
+    }
 
 
     //实现网络的异步访问

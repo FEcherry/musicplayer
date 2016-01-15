@@ -30,13 +30,19 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
     int scrollState;//当前滚动状态
     boolean isRemark;//标记，当前是在listview最顶端摁下的
     int startY;//摁下的Ｙ值
-
     int state;//当前的状态
     final int NONE=0;//正常状态
     final int PULL=1;//提示下拉状态
     final int RELEASE=2;//提示释放状态
     final int REFRESHING=3;//刷新状态
     IRefreshListener iRefreshListener;//刷新数据的接口
+
+    View footer;//底部布局文件
+    int totalItemCount;//Item总数量
+    int lastVisibleItem;//最后一个可见Item
+    boolean isLoading;//正在加载
+    ILoadListener iLoadListener;//加载更多数据的接口
+
 
 
     public RefreshListView(Context context) {
@@ -64,6 +70,11 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         headerHeight=header.getMeasuredHeight();
         topPadding(-headerHeight);
         this.addHeaderView(header);
+
+        LayoutInflater inflater1=LayoutInflater.from(context);
+        footer=inflater1.inflate(R.layout.footer,null);
+        footer.setVisibility(View.GONE);
+        this.addFooterView(footer);
         this.setOnScrollListener(this);
     }
 
@@ -86,18 +97,30 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
 
     //设置header布局上边距
     private void topPadding(int topPadding){
-        header.setPadding(header.getPaddingLeft(),topPadding,header.getPaddingRight(),header.getPaddingBottom());
+        header.setPadding(header.getPaddingLeft(), topPadding, header.getPaddingRight(), header.getPaddingBottom());
         header.invalidate();
     }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         this.scrollState=scrollState;
+
+        if(totalItemCount==lastVisibleItem && scrollState==SCROLL_STATE_IDLE){
+            //加载更多界面
+            if(!isLoading){
+                isLoading=true;
+                footer.setVisibility(View.VISIBLE);
+                iLoadListener.onLoad();
+            }
+
+        }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         this.firstVisibleItem=firstVisibleItem;
+        this.lastVisibleItem=firstVisibleItem+visibleItemCount;
+        this.totalItemCount=totalItemCount;
     }
 
     @Override
@@ -196,7 +219,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                 arrowDown.setVisibility(View.VISIBLE);
                 arrowUp.setVisibility(View.GONE);
                 progress.setVisibility(View.GONE);
-                tip.setText("下拉可以刷新！");
+                tip.setText("Pull Down");
 //                arrow.clearAnimation();
 //                arrow.setAnimation(anim1);
                 break;
@@ -205,23 +228,27 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                 arrowDown.setVisibility(View.GONE);
                 arrowUp.setVisibility(View.VISIBLE);
                 progress.setVisibility(View.GONE);
-                tip.setText("松开可以刷新！");
+                tip.setText("Release");
 //                arrow.clearAnimation();
 //                arrow.setAnimation(anim);
                 break;
 
             case REFRESHING:
-                topPadding(50);
+                topPadding(10);
                 arrowDown.setVisibility(View.GONE);
                 arrowUp.setVisibility(View.GONE);
                 progress.setVisibility(View.VISIBLE);
-                tip.setText("正在刷新……");
+                tip.setText("Loading……");
                 break;
         }
     }
 
-    public void setInterface(IRefreshListener iRefreshListener){
+    public void setRefreshListenerInterface(IRefreshListener iRefreshListener){
         this.iRefreshListener=iRefreshListener;
+    }
+
+    public void setLoadListenerInterface(ILoadListener iLoadListener){
+        this.iLoadListener=iLoadListener;
     }
 
     //获取完数据
@@ -229,14 +256,25 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         state=NONE;
         isRemark=false;
         refreshViewByState();
-        TextView lastUpdateTime= (TextView) header.findViewById(R.id.lastupdatetime);
-        SimpleDateFormat format=new SimpleDateFormat("yyyy年MM月dd日hh:mm:ss");
-        Date date=new Date(System.currentTimeMillis());
-        String time=format.format(date);
-        lastUpdateTime.setText(time);
+//        TextView lastUpdateTime= (TextView) header.findViewById(R.id.lastupdatetime);
+//        SimpleDateFormat format=new SimpleDateFormat("yyyy年MM月dd日hh:mm:ss");
+//        Date date=new Date(System.currentTimeMillis());
+//        String time=format.format(date);
+//        lastUpdateTime.setText(time);
+    }
+
+    //加载完毕
+    public void loadComplete(){
+        isLoading=false;
+        footer.setVisibility(View.GONE);
     }
 
     public interface  IRefreshListener{
         public void onRefresh();
+    }
+
+    //加载更多数据的回调接口
+    public interface ILoadListener{
+        public void onLoad();
     }
 }
