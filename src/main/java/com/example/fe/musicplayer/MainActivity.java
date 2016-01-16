@@ -38,20 +38,9 @@ public class MainActivity extends Activity {
         };
         timer.schedule(task, SPLASH_DISPLAY_LENGHT);
 
-        //判断网络状态
-        if(!isNetworkAvailable(this)){
-            Toast toast = Toast.makeText(getApplicationContext(), "网络不可用！", Toast.LENGTH_SHORT);
-            toast.show();
         }
 
-    }
 
-    public boolean isNetworkAvailable(Context context){
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        return (info !=null && info.isAvailable());
-
-    }
 
 
 }

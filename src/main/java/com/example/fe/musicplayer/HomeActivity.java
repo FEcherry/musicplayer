@@ -2,7 +2,10 @@ package com.example.fe.musicplayer;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,9 +15,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.view.LayoutInflater;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.json.JSONArray;
@@ -38,15 +43,33 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
 
 //    private PullToRefreshListView pullToRefreshListView;
     private RefreshListView mlistView;
-//    private LayoutInflater inflater;
-    private ArrayList<AudioAdapter.ViewHolder> apk_list;
+    private Button reload;
     private static String URL="http://www.imooc.com/api/teacher?type=4&num=30";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home);
 
+
+        if(!isNetworkAvailable(this)){
+            setContentView(R.layout.unavilable_network);
+            Toast toast = Toast.makeText(getApplicationContext(), "网络不可用！", Toast.LENGTH_SHORT);
+            toast.show();
+            reload=(Button)findViewById(R.id.btn_reload);
+            reload.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isNetworkAvailable(HomeActivity.this)) {
+                        startActivity();
+                    }
+                }
+            });
+        }else
+            startActivity();
+    }
+
+    public void startActivity(){
+        setContentView(R.layout.home);
         mlistView=(RefreshListView)findViewById(R.id.listview);
         mlistView.setRefreshListenerInterface(this);
         mlistView.setLoadListenerInterface(this);
@@ -56,17 +79,20 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent();
-                intent.setClass(HomeActivity.this,PlayerActivity.class);
+                intent.setClass(HomeActivity.this,PlayerFragment.class);
                 startActivity(intent);
             }
         });
+    }
+
+    //判断网络状态
+    public boolean isNetworkAvailable(Context context){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return (info !=null && info.isAvailable());
 
     }
 
-    @Override
-    protected void onTitleChanged(CharSequence title, int color) {
-        super.onTitleChanged(title, color);
-    }
 
     //将url对应的JSON格式数据转化为我们所封装的AudioBean
     private List<AudioBean> getJsonData(String url){
@@ -151,11 +177,11 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                new AsyncTask<Void,Void,Void>(){
+                new AsyncTask<Void, Void, Void>() {
 
                     @Override
                     protected Void doInBackground(Void... params) {
-                        
+
                         return null;
                     }
 
