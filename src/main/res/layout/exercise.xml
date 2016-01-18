@@ -13,6 +13,7 @@
         android:gravity="center">
 
         <ImageButton
+            android:id="@+id/ib_horn"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentLeft="true"
@@ -30,6 +31,7 @@
             android:src="@drawable/part1imageview" />
 
         <ImageButton
+            android:id="@+id/ib_starEmpty"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentRight="true"
@@ -37,6 +39,7 @@
             android:background="#ffffff"/>
 
         <ImageButton
+            android:id="@+id/ib_starSolid"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentRight="true"
@@ -75,6 +78,7 @@
         android:gravity="bottom">
 
         <ImageButton
+            android:id="@+id/ib_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

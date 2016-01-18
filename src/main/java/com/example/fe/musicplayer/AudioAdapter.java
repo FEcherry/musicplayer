@@ -63,19 +63,19 @@ public class AudioAdapter extends BaseAdapter {
         if(convertView==null){
             viewHolder =new ViewHolder();
             convertView=mInflater.inflate(R.layout.list_item,null);
-            viewHolder.ivIcon=(ImageView)convertView.findViewById(R.id.imageView);
-            viewHolder.tvTitle=(TextView)convertView.findViewById(R.id.titleTextView);
-            viewHolder.tvContent=(TextView)convertView.findViewById(R.id.dateTextView);
+            viewHolder.mIcon=(ImageView)convertView.findViewById(R.id.imageView);
+            viewHolder.mTitle=(TextView)convertView.findViewById(R.id.titleTextView);
+            viewHolder.mDate=(TextView)convertView.findViewById(R.id.dateTextView);
             convertView.setTag(viewHolder);
         }else {
             viewHolder=(ViewHolder) convertView.getTag();
         }
-        viewHolder.ivIcon.setImageResource(R.drawable.launcher);
+        viewHolder.mIcon.setImageResource(R.drawable.launcher);
         String url=mList.get(position).audioIconUrl;
-        viewHolder.ivIcon.setTag(url);
-        mImageLoader.showImageByAsyncTask(viewHolder.ivIcon, url);
-        viewHolder.tvTitle.setText(mList.get(position).audioTitle);
-        viewHolder.tvContent.setText(mList.get(position).audioContent);
+        viewHolder.mIcon.setTag(url);
+        mImageLoader.showImageByAsyncTask(viewHolder.mIcon, url);
+        viewHolder.mTitle.setText(mList.get(position).audioTitle);
+        viewHolder.mDate.setText(mList.get(position).audioContent);
         return convertView;
 
     }
@@ -103,8 +103,8 @@ public class AudioAdapter extends BaseAdapter {
 //    }
 
     class ViewHolder{
-        public TextView tvTitle,tvContent;
-        public ImageView ivIcon;
+        public TextView mTitle,mDate,mTime;
+        public ImageView mIcon;
     }
 
 

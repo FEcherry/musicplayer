@@ -43,7 +43,7 @@ public class Myservice extends Service implements
 		// getStringExtra������������
 		String songName = intent.getStringExtra("songName");
 		Intent openIntent = new Intent(getApplicationContext(),
-				MainActivity.class);
+				Control.class);
 		
 		// FLAG_ACTIVITY_CLEAR_TOP:��һ�����򿪵Ļ�ᱻ�ս����ʵ��û��������ͬ�Ļ��ͬʱ�򿪡�
 		openIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

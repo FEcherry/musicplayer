@@ -78,8 +78,7 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
         mlistView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent();
-                intent.setClass(HomeActivity.this,PlayerFragment.class);
+                final Intent intent=new Intent(HomeActivity.this,Control.class);
                 startActivity(intent);
             }
         });

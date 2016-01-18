@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#ffffff">
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBarLayout"
-        android:layout_below="@+id/titleLinearLayout">
+        android:layout_above="@+id/seekBarLayout">
 
         <TextView
             android:id="@+id/songWord"
@@ -74,7 +73,7 @@
         android:layout_width="fill_parent"
         android:layout_height="80dp"
         android:layout_above="@+id/txt"
-        android:gravity="center">
+        android:gravity="center_vertical">
 
         <ImageButton
             android:id="@+id/preButton"
@@ -112,20 +111,5 @@
             android:background="@drawable/txt_hide"/>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/titleLinearLayout"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="93dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginRight="54dp">
-        </RelativeLayout>
-    </RelativeLayout>
 </RelativeLayout>

@@ -1,8 +1,5 @@
 package com.example.fe.musicplayer;
 
-/**
- * Created by fe on 16-1-16.
- */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +44,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     private int finalTotalTime;
     private int startTime, endTime;
     private static int part = 0;
-    private Classification classification;
+    private ClassificationFragment classification;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,7 +52,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         if (view == null) {
             view = inflater.inflate(R.layout.player, null);
             netWorkAudioPlayer = new NetWorkAudioPlayer(getActivity());
-            classification = new Classification();
+            classification = new ClassificationFragment();
             initView();
             setListener();
         }
@@ -71,16 +68,16 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     // }
     public void setData(Bundle bundle) {
         part = bundle.getInt("part");
-        Log.i("-----测试part1", part + "");
+        Log.i("-----����part1", part + "");
     }
 
     public int getData() {
         part = getArguments().getInt("part");
-        Log.i("-----测试part2", part + "");
+        Log.i("-----����part2", part + "");
         return part;
     }
 
-    // 耗时操作开始子线程
+    // ��ʱ������ʼ���߳�
 
     public class UpdateSeekBarThread extends Thread {
 
@@ -92,14 +89,14 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Log.i("-----测试part", part + "");
+                Log.i("-----����part", part + "");
                 switch (part) {
                     case 0:
                         handler.sendEmptyMessage(0);
                         break;
                     case 1:
                         handler.sendEmptyMessage(1);
-                        Log.i("---已发送1", "1");
+                        Log.i("---�ѷ���1", "1");
                         break;
                     case 2:
                         handler.sendEmptyMessage(2);
@@ -114,15 +111,15 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     }
 
 	/*
-	 * handler 主要接受子线程发送的数据, 并用此数据配合主线程更新UI.
-	 *
-	 * 如果此时需要一个耗时的操作，例如: 联网读取数据,或者读取本地较大的一个文件的时候，你不能把这些操作放在
-	 * 主线程中，，如果你放在主线程中的话，界面会出现假死现象, 如果5秒钟还没有完成的话，，会收到Android 系统的一个错误提示 "强制关闭".
-	 * 这个时候我们需要把这些耗时的操作，放在一个子线程中,因为子线程涉及到
-	 * UI更新，，Android主线程是线程不安全的，也就是说，更新UI只能在主线程中更新，子线程中操作是危险的.
-	 * 这个时候，Handler就出现了.,来解决这个复杂的问题 , 由于Handler运行在主线程中(UI线程中),
-	 * 它与子线程可以通过Message对象来传递数据, 这个时候，Handler就承担着接受子线程传过来的(子线程用
-	 * sendMessage()方法传弟)Message对象，(里面包含数据) , 把这些消息放入主线程队列中，配合主 线程进行更新UI。
+	 * handler ��Ҫ�������̷߳��͵�����, ���ô�����������̸߳���UI.
+	 * 
+	 * �����ʱ��Ҫһ����ʱ�Ĳ���������: ������ȡ����,���߶�ȡ���ؽϴ��һ���ļ���ʱ���㲻�ܰ���Щ��������
+	 * ���߳��У��������������߳��еĻ����������ּ�������, ���5���ӻ�û����ɵĻ��������յ�Android ϵͳ��һ��������ʾ "ǿ�ƹر�".
+	 * ���ʱ��������Ҫ����Щ��ʱ�Ĳ���������һ�����߳���,��Ϊ���߳��漰��
+	 * UI���£���Android���߳����̲߳���ȫ�ģ�Ҳ����˵������UIֻ�������߳��и��£����߳��в�����Σ�յ�.
+	 * ���ʱ��Handler�ͳ�����.,�����������ӵ����� , ����Handler���������߳���(UI�߳���),
+	 * �������߳̿���ͨ��Message��������������, ���ʱ��Handler�ͳе��Ž������̴߳�������(���߳���
+	 * sendMessage()��������)Message����(�����������) , ����Щ��Ϣ�������̶߳����У������ �߳̽��и���UI��
 	 */
 
     private Handler handler = new Handler() {
@@ -132,13 +129,13 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                     if (netWorkAudioPlayer != null
                             && netWorkAudioPlayer.isPlaying()) {
                         totalTime = netWorkAudioPlayer.getDuration();
-                        int currentTime = netWorkAudioPlayer.getCurrentPosition();// //获取当前播放点
+                        int currentTime = netWorkAudioPlayer.getCurrentPosition();// //��ȡ��ǰ���ŵ�
                         endTextView.setText(getTimeText(totalTime));
                         int seekBarMax = seekBar.getMax();
                         if (totalTime > 0 && currentTime > 0 && seekBarMax > 0) {
                             startTextView.setText(getTimeText(currentTime));
                             seekBar.setProgress((int) (seekBarMax
-                                    * (float) currentTime / totalTime));// 更新进度条
+                                    * (float) currentTime / totalTime));// ���½�����
                         }
                     }
                     break;
@@ -161,12 +158,12 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                 startTime = getArguments().getInt("startTime");
                 endTime = getArguments().getInt("endTime");
                 finalTotalTime = endTime - startTime;
-                int currentTime = netWorkAudioPlayer.getCurrentPosition();// //获取当前播放点
+                int currentTime = netWorkAudioPlayer.getCurrentPosition();// //��ȡ��ǰ���ŵ�
                 endTextView.setText(getTimeText(endTime));
                 int seekBarMax = seekBar.getMax();
                 if (finalTotalTime > 0 && currentTime > 0 && seekBarMax > 0) {
                     startTextView.setText(getTimeText(currentTime));
-                    seekBar.setProgress((int) (seekBarMax * (float) currentTime / finalTotalTime));// 更新进度条
+                    seekBar.setProgress((int) (seekBarMax * (float) currentTime / finalTotalTime));// ���½�����
                 }
             }
         }
@@ -174,11 +171,11 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         private String getTimeText(int time) {
             // TODO Auto-generated method stub
 			/*
-			 * 传入的time参数单位为milliseconds，即毫秒 这个方法可以将毫秒单位的时间转换为0：00形式的时间
+			 * �����time������λΪmilliseconds�������� ����������Խ����뵥λ��ʱ��ת��Ϊ0��00��ʽ��ʱ��
 			 */
-            int totalSeconds = time / 1000;// 毫秒转化为秒
-            int minutes = totalSeconds / 60;// 转化为分钟
-            int seconds = totalSeconds % 60;// 转化为秒
+            int totalSeconds = time / 1000;// ����ת��Ϊ��
+            int minutes = totalSeconds / 60;// ת��Ϊ����
+            int seconds = totalSeconds % 60;// ת��Ϊ��
             String showTime;
             if (seconds > 9 && seconds < 60) {
                 showTime = minutes + ":" + seconds;
@@ -244,7 +241,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         private int part;
 
         /*
-         * 参数 seekBar The SeekBar whose progress has changed progress The
+         * ���� seekBar The SeekBar whose progress has changed progress The
          * current progress level. This will be in the range 0..max where max
          * was set by setMax(int). (The default value for max is 100.) fromUser
          * True if the progress change was initiated by the user.
@@ -304,7 +301,7 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.txt_change:
-                songWord.setText("正在加载歌词。。。");
+                songWord.setText("���ڼ��ظ�ʡ�����");
 
         }
         intent = new Intent(getActivity(), Myservice.class);
