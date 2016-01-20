@@ -41,10 +41,8 @@ import java.util.List;
  */
 public class HomeActivity extends Activity implements RefreshListView.IRefreshListener,RefreshListView.ILoadListener{
 
-//    private PullToRefreshListView pullToRefreshListView;
     private RefreshListView mlistView;
     private Button reload;
-    private static String URL="http://www.imooc.com/api/teacher?type=4&num=30";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +72,7 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
         mlistView.setRefreshListenerInterface(this);
         mlistView.setLoadListenerInterface(this);
 
-        new AudioAsyncTask().execute(URL);//执行listview加载任务
+        new AudioAsyncTask().execute(GlobalConst.URL);//执行listview加载任务
         mlistView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -203,7 +201,7 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
             return getJsonData(params[0]);
         }
 
-        protected  void onPostExecute(List<AudioBean> audioBean){
+        protected void onPostExecute(List<AudioBean> audioBean){
             super.onPostExecute(audioBean);
             AudioAdapter adapter=new AudioAdapter(HomeActivity.this,audioBean,mlistView);
             mlistView.setAdapter(adapter);

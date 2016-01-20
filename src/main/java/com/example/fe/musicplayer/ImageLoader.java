@@ -21,7 +21,6 @@ import java.util.Set;
  * Created by fe on 16-1-13.
  */
 public class ImageLoader {
-
     private ImageView mImageView;
     private String mUrl;
     //创建Cache
