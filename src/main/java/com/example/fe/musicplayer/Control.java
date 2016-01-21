@@ -18,10 +18,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Control extends FragmentActivity implements OnClickListener,
         ClassificationFragment.ArgumentPassedListener {
+    private TextView mTitle;
     private String TAG = "MainActivity";
     private ViewPager viewPager;
     private List<Fragment> listFragment;
@@ -51,6 +53,10 @@ public class Control extends FragmentActivity implements OnClickListener,
 
     private void init() {
         // TODO Auto-generated method stub
+        Intent intent=getIntent();
+        mTitle=(TextView)this.findViewById(R.id.audioTitle);
+        mTitle.setText(intent.getStringExtra("title"));
+
         mBack = (ImageButton) this.findViewById(R.id.back);
         mBack.setOnClickListener(this);
         viewPager = (ViewPager) this.findViewById(R.id.viewPager);
@@ -90,7 +96,6 @@ public class Control extends FragmentActivity implements OnClickListener,
     }
 
     @Override
-    // ��networkPlayer���ܵ�Ҫ���ݵĲ���
     public void onArgumentPassed(Bundle bundle) {
         // networkPlayerFragment.setData(bundle);
 

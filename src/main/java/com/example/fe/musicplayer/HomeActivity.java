@@ -18,6 +18,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.view.LayoutInflater;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -43,6 +45,8 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
 
     private RefreshListView mlistView;
     private Button reload;
+    private List<AudioBean> list;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +80,11 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
         mlistView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Intent intent=new Intent(HomeActivity.this,Control.class);
+                Intent intent=new Intent(HomeActivity.this,Control.class);
+                intent.putExtra("title",list.get(position-1).audioTitle);
+                intent.putExtra("content",list.get(position-1).audioContent);
                 startActivity(intent);
+
             }
         });
     }
@@ -150,9 +157,7 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
                 new AsyncTask<Void,Void,Void>(){
                     @Override
                     protected Void doInBackground(Void... params) {
-
                         return null;
-
                     }
 
                     @Override
@@ -195,14 +200,21 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
     }
 
 
-    //实现网络的异步访问
+    //实现网络的异步访问,三个参数分别为url类型，进度值类型，返回值类型
     class AudioAsyncTask extends AsyncTask<String,Integer,List<AudioBean>>{
+
         protected List<AudioBean> doInBackground(String...params){
-            return getJsonData(params[0]);
+            list = getJsonData(params[0]);
+            return list;
         }
 
         protected void onPostExecute(List<AudioBean> audioBean){
             super.onPostExecute(audioBean);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             AudioAdapter adapter=new AudioAdapter(HomeActivity.this,audioBean,mlistView);
             mlistView.setAdapter(adapter);
         }

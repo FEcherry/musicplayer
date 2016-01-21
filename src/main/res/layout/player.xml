@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#ffffff">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#ffffff">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -8,11 +9,12 @@
         android:layout_above="@+id/seekBarLayout">
 
         <TextView
-            android:id="@+id/songWord"
+            android:id="@+id/audioTxt"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:text="hhh"/>
+            android:textColor="#d8c3c2"
+            android:text="123"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -100,15 +102,26 @@
     <RelativeLayout
         android:id="@+id/txt"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <ImageButton
-            android:id="@+id/txt_change"
-            android:layout_width="50dp"
+            android:id="@+id/txt_hide"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:background="@drawable/txt_hide"/>
+            android:src="@drawable/txt_hide"
+            android:background="#ffffff"/>
+
+        <ImageButton
+            android:id="@+id/txt_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/txt_show"
+            android:visibility="gone"
+            android:background="#ffffff"/>
+
     </RelativeLayout>
 
 

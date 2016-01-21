@@ -28,16 +28,20 @@ import android.view.ViewGroup;
 
 public class PlayerFragment extends Fragment implements View.OnClickListener,
         OnCompletionListener, OnPreparedListener {
+
     private NetWorkAudioPlayer netWorkAudioPlayer;
-    private ImageButton txt;
-    private TextView songWord;
-    private ImageButton playButton;
-    private ImageButton preButton;
-    private ImageButton nextButton;
-    private SeekBar seekBar;
-    private TextView startTextView;
-    private TextView endTextView;
-    boolean pause = true;
+
+    private ImageButton mTxtBtn;
+    private ImageButton mTxtBtn2;
+    private ImageButton mPlayBtn;
+    private ImageButton mPreBtn;
+    private ImageButton mNextBtn;
+
+    private SeekBar mSeekBar;
+    private TextView mContent;
+    private TextView mStartTextView;
+    private TextView mEndTextView;
+    boolean isPause = true;
     private Intent intent;
     private View view;
     private static int totalTime;
@@ -63,21 +67,17 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         return view;
     }
 
-    // public void setData(Bundle bundle) {
-    // part = bundle.getInt("part");
-    // }
+
     public void setData(Bundle bundle) {
         part = bundle.getInt("part");
-        Log.i("-----����part1", part + "");
     }
 
     public int getData() {
         part = getArguments().getInt("part");
-        Log.i("-----����part2", part + "");
         return part;
     }
 
-    // ��ʱ������ʼ���߳�
+
 
     public class UpdateSeekBarThread extends Thread {
 
@@ -89,14 +89,12 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                Log.i("-----����part", part + "");
                 switch (part) {
                     case 0:
                         handler.sendEmptyMessage(0);
                         break;
                     case 1:
                         handler.sendEmptyMessage(1);
-                        Log.i("---�ѷ���1", "1");
                         break;
                     case 2:
                         handler.sendEmptyMessage(2);
@@ -110,18 +108,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-	/*
-	 * handler ��Ҫ�������̷߳��͵�����, ���ô�����������̸߳���UI.
-	 * 
-	 * �����ʱ��Ҫһ����ʱ�Ĳ���������: ������ȡ����,���߶�ȡ���ؽϴ��һ���ļ���ʱ���㲻�ܰ���Щ��������
-	 * ���߳��У��������������߳��еĻ����������ּ�������, ���5���ӻ�û����ɵĻ��������յ�Android ϵͳ��һ��������ʾ "ǿ�ƹر�".
-	 * ���ʱ��������Ҫ����Щ��ʱ�Ĳ���������һ�����߳���,��Ϊ���߳��漰��
-	 * UI���£���Android���߳����̲߳���ȫ�ģ�Ҳ����˵������UIֻ�������߳��и��£����߳��в�����Σ�յ�.
-	 * ���ʱ��Handler�ͳ�����.,�����������ӵ����� , ����Handler���������߳���(UI�߳���),
-	 * �������߳̿���ͨ��Message��������������, ���ʱ��Handler�ͳе��Ž������̴߳�������(���߳���
-	 * sendMessage()��������)Message����(�����������) , ����Щ��Ϣ�������̶߳����У������ �߳̽��и���UI��
-	 */
-
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -129,13 +115,13 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                     if (netWorkAudioPlayer != null
                             && netWorkAudioPlayer.isPlaying()) {
                         totalTime = netWorkAudioPlayer.getDuration();
-                        int currentTime = netWorkAudioPlayer.getCurrentPosition();// //��ȡ��ǰ���ŵ�
-                        endTextView.setText(getTimeText(totalTime));
-                        int seekBarMax = seekBar.getMax();
+                        int currentTime = netWorkAudioPlayer.getCurrentPosition();
+                        mEndTextView.setText(getTimeText(totalTime));
+                        int seekBarMax = mSeekBar.getMax();
                         if (totalTime > 0 && currentTime > 0 && seekBarMax > 0) {
-                            startTextView.setText(getTimeText(currentTime));
-                            seekBar.setProgress((int) (seekBarMax
-                                    * (float) currentTime / totalTime));// ���½�����
+                            mStartTextView.setText(getTimeText(currentTime));
+                            mSeekBar.setProgress((int) (seekBarMax
+                                    * (float) currentTime / totalTime));
                         }
                     }
                     break;
@@ -158,24 +144,21 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                 startTime = getArguments().getInt("startTime");
                 endTime = getArguments().getInt("endTime");
                 finalTotalTime = endTime - startTime;
-                int currentTime = netWorkAudioPlayer.getCurrentPosition();// //��ȡ��ǰ���ŵ�
-                endTextView.setText(getTimeText(endTime));
-                int seekBarMax = seekBar.getMax();
+                int currentTime = netWorkAudioPlayer.getCurrentPosition();
+                mEndTextView.setText(getTimeText(endTime));
+                int seekBarMax = mSeekBar.getMax();
                 if (finalTotalTime > 0 && currentTime > 0 && seekBarMax > 0) {
-                    startTextView.setText(getTimeText(currentTime));
-                    seekBar.setProgress((int) (seekBarMax * (float) currentTime / finalTotalTime));// ���½�����
+                    mStartTextView.setText(getTimeText(currentTime));
+                    mSeekBar.setProgress((int) (seekBarMax * (float) currentTime / finalTotalTime));
                 }
             }
         }
 
         private String getTimeText(int time) {
             // TODO Auto-generated method stub
-			/*
-			 * �����time������λΪmilliseconds�������� ����������Խ����뵥λ��ʱ��ת��Ϊ0��00��ʽ��ʱ��
-			 */
-            int totalSeconds = time / 1000;// ����ת��Ϊ��
-            int minutes = totalSeconds / 60;// ת��Ϊ����
-            int seconds = totalSeconds % 60;// ת��Ϊ��
+            int totalSeconds = time / 1000;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
             String showTime;
             if (seconds > 9 && seconds < 60) {
                 showTime = minutes + ":" + seconds;
@@ -201,25 +184,26 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     }
 
     public void initView() {
-        playButton = (ImageButton) view.findViewById(R.id.playButton);
-        preButton = (ImageButton) view.findViewById(R.id.preButton);
-        nextButton = (ImageButton) view.findViewById(R.id.nextButton);
-        txt = (ImageButton) view.findViewById(R.id.txt_change);
-        songWord = (TextView) view.findViewById(R.id.songWord);
-        seekBar = (SeekBar) view.findViewById(R.id.seekBar);
-        startTextView = (TextView) view.findViewById(R.id.startTextView);
-        endTextView = (TextView) view.findViewById(R.id.endTextView);
+        mPlayBtn = (ImageButton) view.findViewById(R.id.playButton);
+        mPreBtn = (ImageButton) view.findViewById(R.id.preButton);
+        mNextBtn = (ImageButton) view.findViewById(R.id.nextButton);
+        mTxtBtn = (ImageButton) view.findViewById(R.id.txt_hide);
+        mTxtBtn2 = (ImageButton) view.findViewById(R.id.txt_show);
+        mContent = (TextView) view.findViewById(R.id.audioTxt);
+        mSeekBar = (SeekBar) view.findViewById(R.id.seekBar);
+        mStartTextView = (TextView) view.findViewById(R.id.startTextView);
+        mEndTextView = (TextView) view.findViewById(R.id.endTextView);
     }
 
     public void setListener() {
-        playButton.setOnClickListener(this);
-        preButton.setOnClickListener(this);
-        nextButton.setOnClickListener(this);
-
-        txt.setOnClickListener(this);
+        mPlayBtn.setOnClickListener(this);
+        mPreBtn.setOnClickListener(this);
+        mNextBtn.setOnClickListener(this);
+        mTxtBtn.setOnClickListener(this);
+        mTxtBtn2.setOnClickListener(this);
         netWorkAudioPlayer.setOnPreparedListener(this);
         netWorkAudioPlayer.setOnCompletionListener(this);
-        seekBar.setOnSeekBarChangeListener(new ProgressBarListener());
+        mSeekBar.setOnSeekBarChangeListener(new ProgressBarListener());
 
     }
 
@@ -240,14 +224,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     private class ProgressBarListener implements OnSeekBarChangeListener {
         private int part;
 
-        /*
-         * ���� seekBar The SeekBar whose progress has changed progress The
-         * current progress level. This will be in the range 0..max where max
-         * was set by setMax(int). (The default value for max is 100.) fromUser
-         * True if the progress change was initiated by the user.
-         */
-        public ProgressBarListener() {
 
+        public ProgressBarListener() {
         }
 
         public void onProgressChanged(SeekBar seekBar, int progress,
@@ -280,28 +258,35 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.playButton:
-                if (pause) {
+                if (isPause) {
                     netWorkAudioPlayer.play();
-                    playButton.setBackgroundResource(R.drawable.pause);
-                    pause = false;
+                    mPlayBtn.setBackgroundResource(R.drawable.pause);
+                    isPause = false;
                 } else {
                     netWorkAudioPlayer.playPause();
-                    playButton.setBackgroundResource(R.drawable.play);
-                    pause = true;
+                    mPlayBtn.setBackgroundResource(R.drawable.play);
+                    isPause = true;
                 }
                 break;
 
             case R.id.preButton:
                 netWorkAudioPlayer.playPrevious();
-                // playButton.setText(PAUSE);
-                break;
-            case R.id.nextButton:
-                netWorkAudioPlayer.playNext();
-                // playButton.setText(PAUSE);
                 break;
 
-            case R.id.txt_change:
-                songWord.setText("���ڼ��ظ�ʡ�����");
+            case R.id.nextButton:
+                netWorkAudioPlayer.playNext();
+                break;
+
+            case R.id.txt_hide:
+                intent=getActivity().getIntent();
+                mContent.setText(intent.getStringExtra("content"));
+                mTxtBtn.setVisibility(View.GONE);
+                mTxtBtn2.setVisibility(View.VISIBLE);
+
+            case R.id.txt_show:
+                mContent.setText("");
+                mTxtBtn2.setVisibility(View.GONE);
+                mTxtBtn.setVisibility(View.VISIBLE);
 
         }
         intent = new Intent(getActivity(), Myservice.class);

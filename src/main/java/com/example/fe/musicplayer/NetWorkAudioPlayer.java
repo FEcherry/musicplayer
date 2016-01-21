@@ -19,14 +19,13 @@ public class NetWorkAudioPlayer extends MediaPlayer implements IAudioPlayer {
 		// TODO Auto-generated constructor stub
 		this.context = context;
 	}
-	//ͨ��url��ȡ������Ƶ��Դ
+
 	private String getSource(){
 		String[] strs = new String[3];
 		strs[0]=urlString1;
 		strs[1]=urlString2;
 		strs[2]=urlString3;
-		
-		//�����ȡ
+
 		return strs[new Random().nextInt(3)];
 	}
 	
