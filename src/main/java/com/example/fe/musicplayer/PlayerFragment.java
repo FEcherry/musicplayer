@@ -7,7 +7,14 @@ import android.R.integer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
+import android.renderscript.RenderScript;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +27,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Telephony.Mms.Part;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -31,8 +39,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
 
     private NetWorkAudioPlayer netWorkAudioPlayer;
 
+    private ImageView mBackgroundImageView;
     private ImageButton mTxtBtn;
-    private ImageButton mTxtBtn2;
     private ImageButton mPlayBtn;
     private ImageButton mPreBtn;
     private ImageButton mNextBtn;
@@ -41,7 +49,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     private TextView mContent;
     private TextView mStartTextView;
     private TextView mEndTextView;
-    boolean isPause = true;
+    private boolean isPause = true;
+    private boolean isTxtShow=false;
     private Intent intent;
     private View view;
     private static int totalTime;
@@ -49,6 +58,8 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     private int startTime, endTime;
     private static int part = 0;
     private ClassificationFragment classification;
+    private ImageLoader mImageLoader;
+    private ViewPager mViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +74,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
 
         UpdateSeekBarThread thread = new UpdateSeekBarThread();
         thread.start();
-
         return view;
     }
 
@@ -77,10 +87,11 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         return part;
     }
 
-
+    public void setViewPager(ViewPager viewPager) {
+        this.mViewPager = viewPager;
+    }
 
     public class UpdateSeekBarThread extends Thread {
-
         public void run() {
             while (netWorkAudioPlayer != null) {
                 try {
@@ -184,15 +195,20 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
     }
 
     public void initView() {
+        mBackgroundImageView=(ImageView)view.findViewById(R.id.backgroundImage);
         mPlayBtn = (ImageButton) view.findViewById(R.id.playButton);
         mPreBtn = (ImageButton) view.findViewById(R.id.preButton);
         mNextBtn = (ImageButton) view.findViewById(R.id.nextButton);
         mTxtBtn = (ImageButton) view.findViewById(R.id.txt_hide);
-        mTxtBtn2 = (ImageButton) view.findViewById(R.id.txt_show);
         mContent = (TextView) view.findViewById(R.id.audioTxt);
         mSeekBar = (SeekBar) view.findViewById(R.id.seekBar);
         mStartTextView = (TextView) view.findViewById(R.id.startTextView);
         mEndTextView = (TextView) view.findViewById(R.id.endTextView);
+        //设置传入的背景图
+        intent=getActivity().getIntent();
+        mImageLoader=new ImageLoader();
+        String iconUrl = intent.getStringExtra("iconUrl");
+        mImageLoader.showImageByAsyncTask(mBackgroundImageView, iconUrl);
     }
 
     public void setListener() {
@@ -200,7 +216,6 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
         mPreBtn.setOnClickListener(this);
         mNextBtn.setOnClickListener(this);
         mTxtBtn.setOnClickListener(this);
-        mTxtBtn2.setOnClickListener(this);
         netWorkAudioPlayer.setOnPreparedListener(this);
         netWorkAudioPlayer.setOnCompletionListener(this);
         mSeekBar.setOnSeekBarChangeListener(new ProgressBarListener());
@@ -278,20 +293,102 @@ public class PlayerFragment extends Fragment implements View.OnClickListener,
                 break;
 
             case R.id.txt_hide:
-                intent=getActivity().getIntent();
-                mContent.setText(intent.getStringExtra("content"));
-                mTxtBtn.setVisibility(View.GONE);
-                mTxtBtn2.setVisibility(View.VISIBLE);
-
-            case R.id.txt_show:
-                mContent.setText("");
-                mTxtBtn2.setVisibility(View.GONE);
-                mTxtBtn.setVisibility(View.VISIBLE);
+                if(!isTxtShow) {
+                    intent = getActivity().getIntent();
+                    mContent.setText(intent.getStringExtra("content"));
+                    mTxtBtn.setImageResource(R.drawable.txt_show);
+                    isTxtShow=true;
+                }else{
+                    mContent.setText("");
+                    mTxtBtn.setImageResource(R.drawable.txt_hide);
+                    isTxtShow=false;
+                }
 
         }
         intent = new Intent(getActivity(), Myservice.class);
         intent.putExtra("songName", "This is networkPlayer's song.");
         getActivity().startService(intent);
     }
+
+
+    /**
+     * 高斯模糊
+     * @param bmp
+     * @return
+     */
+//    public static Bitmap convertToBlur(Bitmap bmp) {
+//        // 高斯矩阵
+//        int[] gauss = new int[] { 1, 2, 1, 2, 4, 2, 1, 2, 1 };
+//
+//        int width = bmp.getWidth();
+//        int height = bmp.getHeight();
+//        Bitmap newBmp = Bitmap.createBitmap(width, height,
+//                Bitmap.Config.RGB_565);
+//
+//        int pixR = 0;
+//        int pixG = 0;
+//        int pixB = 0;
+//
+//        int pixColor = 0;
+//
+//        int newR = 0;
+//        int newG = 0;
+//        int newB = 0;
+//
+//        int delta = 16; // 值越小图片会越亮，越大则越暗
+//
+//        int idx = 0;
+//        int[] pixels = new int[width * height];
+//        bmp.getPixels(pixels, 0, width, 0, 0, width, height);
+//        for (int i = 1, length = height - 1; i < length; i++) {
+//            for (int k = 1, len = width - 1; k < len; k++) {
+//                idx = 0;
+//                for (int m = -1; m <= 1; m++) {
+//                    for (int n = -1; n <= 1; n++) {
+//                        pixColor = pixels[(i + m) * width + k + n];
+//                        pixR = Color.red(pixColor);
+//                        pixG = Color.green(pixColor);
+//                        pixB = Color.blue(pixColor);
+//
+//                        newR = newR + pixR * gauss[idx];
+//                        newG = newG + pixG * gauss[idx];
+//                        newB = newB + pixB * gauss[idx];
+//                        idx++;
+//                    }
+//                }
+//
+//                newR /= delta;
+//                newG /= delta;
+//                newB /= delta;
+//
+//                newR = Math.min(255, Math.max(0, newR));
+//                newG = Math.min(255, Math.max(0, newG));
+//                newB = Math.min(255, Math.max(0, newB));
+//
+//                pixels[i * width + k] = Color.argb(255, newR, newG, newB);
+//
+//                newR = 0;
+//                newG = 0;
+//                newB = 0;
+//            }
+//        }
+//
+//        newBmp.setPixels(pixels, 0, width, 0, 0, width, height);
+//
+//        return newBmp;
+//    }
+//
+//    //drawable转bitmap
+//    public Bitmap drawableToBitmap(Drawable drawable) {
+//        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+//                drawable.getIntrinsicHeight(),
+//                drawable.getOpacity() != PixelFormat.OPAQUE ?
+//                        Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+//        Canvas canvas = new Canvas(bitmap);
+//        //canvas.setBitmap(bitmap);
+//        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+//        drawable.draw(canvas);
+//        return bitmap;
+//    }
 
 }

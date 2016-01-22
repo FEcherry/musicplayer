@@ -83,6 +83,7 @@ public class HomeActivity extends Activity implements RefreshListView.IRefreshLi
                 Intent intent=new Intent(HomeActivity.this,Control.class);
                 intent.putExtra("title",list.get(position-1).audioTitle);
                 intent.putExtra("content",list.get(position-1).audioContent);
+                intent.putExtra("iconUrl",list.get(position-1).audioIconUrl);
                 startActivity(intent);
 
             }

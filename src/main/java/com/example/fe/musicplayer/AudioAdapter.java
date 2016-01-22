@@ -25,7 +25,7 @@ public class AudioAdapter extends BaseAdapter {
         mList=data;
         mInflater=LayoutInflater.from(context);
         //初始化ImageLoader,保留唯一的LRUCache
-        mImageLoader=new ImageLoader(listView);
+        mImageLoader=new ImageLoader();
 
 
     }

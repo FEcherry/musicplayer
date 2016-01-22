@@ -25,10 +25,8 @@ public class ImageLoader {
     private String mUrl;
     //创建Cache
     private LruCache<String,Bitmap> mCaches;
-//    private RefreshListView mListView;
-//    private Set<AudioAsyncTask> mTask;
 
-    public ImageLoader(RefreshListView listView){
+    public ImageLoader(){
 //        mListView=listView;
 //        mTask=new HashSet<>();
         //获取最大可用内存
@@ -169,9 +167,9 @@ public class ImageLoader {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            if(mImageView.getTag().equals(mUrl)){
+//            if(mImageView.getTag().equals(mUrl)){
                 mImageView.setImageBitmap(bitmap);
-            }
+//            }
 
         }
     }

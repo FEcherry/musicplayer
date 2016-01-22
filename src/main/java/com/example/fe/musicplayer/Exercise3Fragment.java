@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +12,25 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 
-public class Exercise3Fragment extends Activity{
+public class Exercise3Fragment extends Fragment{
     private ImageButton mBack;
     private ImageButton mHorn;
     private ImageButton mStar;
     private ImageButton mLast;
     private TextView mTxt;
     private TextView mAnswer;
+    private boolean isLight=false;
     View view;
+    private ViewPager mViewPager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.exercise_three);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        view=inflater.inflate(R.layout.exercise_three, null);
         initView();
+        return view;
+
     }
 
     private void initView(){
@@ -38,18 +44,34 @@ public class Exercise3Fragment extends Activity{
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Exercise3Fragment.this,HomeActivity.class);
+                Intent intent=new Intent(getActivity(),HomeActivity.class);
                 startActivity(intent);
 
             }
         });
+
+        mStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isLight){
+                    mStar.setImageResource(R.drawable.starsolid);
+                    isLight=true;
+                }else{
+                    mStar.setImageResource(R.drawable.starempty);
+                }
+            }
+        });
+
         mLast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Exercise3Fragment.this,Exercise2Fragment.class);
-                startActivity(intent);
+                mViewPager.setCurrentItem(3);
 
             }
         });
+    }
+
+    public void setViewPager(ViewPager viewPager) {
+        this.mViewPager = viewPager;
     }
 }

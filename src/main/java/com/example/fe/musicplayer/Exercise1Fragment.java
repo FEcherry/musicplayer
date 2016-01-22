@@ -3,6 +3,7 @@ package com.example.fe.musicplayer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,9 @@ public class Exercise1Fragment extends Fragment{
     private ImageButton mNext;
     private TextView mTxt;
     private TextView mAnswer;
+    private Boolean isLight=false;
     View view;
+    private ViewPager mViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,10 +43,24 @@ public class Exercise1Fragment extends Fragment{
         mNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(),Exercise2Fragment.class);
-                startActivity(intent);
+                mViewPager.setCurrentItem(3);
 
             }
         });
+        mStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               if(!isLight){
+                   mStar.setImageResource(R.drawable.starsolid);
+                   isLight=true;
+               }else{
+                   mStar.setImageResource(R.drawable.starempty);
+               }
+            }
+        });
+    }
+
+    public void setViewPager(ViewPager viewPager) {
+        this.mViewPager = viewPager;
     }
 }

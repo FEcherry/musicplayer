@@ -23,15 +23,15 @@ import android.widget.Toast;
 
 public class ClassificationFragment extends Fragment implements OnClickListener {
 
-    private ImageButton part1;
-    private ImageButton star1;
-    private ImageButton part2;
-    private ImageButton star2;
-    private ImageButton part3;
-    private ImageButton star3;
+    private ImageButton mPart1Btn;
+    private ImageButton mStar1Btn;
+    private ImageButton mPart2Btn;
+    private ImageButton mStar2Btn;
+    private ImageButton mPart3Btn;
+    private ImageButton mStar3Btn;
     private View view;
-    boolean light = false;
-    private ViewPager viewPager;
+    private boolean isLight = false;
+    private ViewPager mViewPager;
     private NetWorkAudioPlayer netWorkAudioPlayer;
     private Bundle bundle;
     private ArgumentPassedListener argumentPassedListener;
@@ -45,13 +45,12 @@ public class ClassificationFragment extends Fragment implements OnClickListener 
         return totalTime;
     }
 
-    // ��fragment�ڲ�����һ���ص��ӿڣ���Activityʵ������ӿڣ�����fragmengt���øûص������������ݴ��ݸ�Activity
     public interface ArgumentPassedListener {
         public void onArgumentPassed(Bundle bundle);
     }
 
     public void setViewPager(ViewPager viewPager) {
-        this.viewPager = viewPager;
+        this.mViewPager = viewPager;
     }
 
     @Override
@@ -72,24 +71,24 @@ public class ClassificationFragment extends Fragment implements OnClickListener 
 
     private void initEvent() {
         // TODO Auto-generated method stub
-        part1.setOnClickListener(this);
-        part2.setOnClickListener(this);
-        part3.setOnClickListener(this);
-        star1.setOnClickListener(this);
-        star2.setOnClickListener(this);
-        star3.setOnClickListener(this);
+        mPart1Btn.setOnClickListener(this);
+        mPart2Btn.setOnClickListener(this);
+        mPart3Btn.setOnClickListener(this);
+        mStar1Btn.setOnClickListener(this);
+        mStar2Btn.setOnClickListener(this);
+        mStar3Btn.setOnClickListener(this);
 
     }
 
     private void initView() {
         // TODO Auto-generated method stub
-        part1 = (ImageButton) view.findViewById(R.id.part1);
-        part2 = (ImageButton) view.findViewById(R.id.part2);
-        part3 = (ImageButton) view.findViewById(R.id.part3);
+        mPart1Btn = (ImageButton) view.findViewById(R.id.part1);
+        mPart2Btn = (ImageButton) view.findViewById(R.id.part2);
+        mPart3Btn = (ImageButton) view.findViewById(R.id.part3);
 
-        star1 = (ImageButton) view.findViewById(R.id.star1);
-        star2 = (ImageButton) view.findViewById(R.id.star2);
-        star3 = (ImageButton) view.findViewById(R.id.star3);
+        mStar1Btn = (ImageButton) view.findViewById(R.id.star1);
+        mStar2Btn = (ImageButton) view.findViewById(R.id.star2);
+        mStar3Btn = (ImageButton) view.findViewById(R.id.star3);
 
     }
 
@@ -106,53 +105,49 @@ public class ClassificationFragment extends Fragment implements OnClickListener 
                 bundle.putInt("startTime", 0);
                 bundle.putInt("endTime", totalTime / 3);
                 argumentPassedListener.onArgumentPassed(bundle);
-                viewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(2);
                 break;
             case R.id.part2:
                 bundle.putInt("part", 2);
                 bundle.putInt("startTime", totalTime / 3);
                 bundle.putInt("endTime", totalTime * 2 / 3);
-                viewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(3);
                 break;
             case R.id.part3:
                 bundle.putInt("part", 3);
                 bundle.putInt("startTime", totalTime * 2 / 3);
                 bundle.putInt("endTime", totalTime);
-                viewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(4);
                 break;
             case R.id.star1:
-                if (light) {
-                    star1.setImageResource(R.drawable.starempty);
-                    light = false;
+                if (isLight) {
+                    mStar1Btn.setImageResource(R.drawable.starempty);
+                    isLight = false;
                 } else {
-                    star1.setImageResource(R.drawable.starsolid);
-                    light = true;
+                    mStar1Btn.setImageResource(R.drawable.starsolid);
+                    isLight = true;
                 }
                 break;
             case R.id.star2:
-                if (light) {
-                    star2.setImageResource(R.drawable.starempty);
-                    light = false;
+                if (isLight) {
+                    mStar2Btn.setImageResource(R.drawable.starempty);
+                    isLight = false;
                 } else {
-                    star2.setImageResource(R.drawable.starsolid);
-                    light = true;
+                    mStar2Btn.setImageResource(R.drawable.starsolid);
+                    isLight = true;
                 }
                 break;
             case R.id.star3:
-                if (light) {
-                    star3.setImageResource(R.drawable.starempty);
-                    light = false;
+                if (isLight) {
+                    mStar3Btn.setImageResource(R.drawable.starempty);
+                    isLight = false;
                 } else {
-                    star3.setImageResource(R.drawable.starsolid);
-                    light = true;
+                    mStar3Btn.setImageResource(R.drawable.starsolid);
+                    isLight = true;
                 }
                 break;
 
         }
 
-//		Toast.makeText(getActivity(), getArguments().getInt("part"),
-//				Toast.LENGTH_SHORT).show();
-        // Log.i("------part", getArguments().getInt("part")+"");
-        // Log.i("------part", getArguments().getInt("endTime")+"");
     }
 }

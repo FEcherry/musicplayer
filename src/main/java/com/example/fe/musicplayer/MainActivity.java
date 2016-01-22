@@ -20,16 +20,16 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final Intent intent=new Intent(MainActivity.this,HomeActivity.class);
         Timer timer=new Timer();
         TimerTask task=new TimerTask() {
             @Override
             public void run() {
-                Intent intent=new Intent();
-                intent.setClass(MainActivity.this,HomeActivity.class);
                 startActivity(intent);
+                MainActivity.this.finish();
             }
         };
         timer.schedule(task,SPLASH_DISPLAY_LENGHT);
+
     }
 }

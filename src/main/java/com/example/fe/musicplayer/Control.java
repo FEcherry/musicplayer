@@ -24,15 +24,16 @@ import android.widget.Toast;
 public class Control extends FragmentActivity implements OnClickListener,
         ClassificationFragment.ArgumentPassedListener {
     private TextView mTitle;
-    private String TAG = "MainActivity";
-    private ViewPager viewPager;
-    private List<Fragment> listFragment;
-    private FragmentPagerAdapter adapter;
+    private ViewPager mViewPager;
+    private List<Fragment> mListFragment;
+    private FragmentPagerAdapter mAdapter;
     private ImageButton mBack;
     private Bundle bundle;
     ClassificationFragment classificationFragment;
     PlayerFragment networkPlayerFragment;
     Exercise1Fragment exercise1Fragment;
+    Exercise2Fragment exercise2Fragment;
+    Exercise3Fragment exercise3Fragment;
 
     public void setBundle(Bundle bundle) {
         this.bundle = bundle;
@@ -48,10 +49,10 @@ public class Control extends FragmentActivity implements OnClickListener,
         super.onCreate(arg0);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.control);
-        init();
+        initView();
     }
 
-    private void init() {
+    private void initView() {
         // TODO Auto-generated method stub
         Intent intent=getIntent();
         mTitle=(TextView)this.findViewById(R.id.audioTitle);
@@ -59,34 +60,41 @@ public class Control extends FragmentActivity implements OnClickListener,
 
         mBack = (ImageButton) this.findViewById(R.id.back);
         mBack.setOnClickListener(this);
-        viewPager = (ViewPager) this.findViewById(R.id.viewPager);
-        listFragment = new ArrayList<Fragment>();
+        mViewPager = (ViewPager) this.findViewById(R.id.viewPager);
+        mListFragment = new ArrayList<Fragment>();
 
         classificationFragment = new ClassificationFragment();
         exercise1Fragment = new Exercise1Fragment();
         networkPlayerFragment = new PlayerFragment();
 
-        classificationFragment.setViewPager(viewPager);
-        listFragment.add(classificationFragment);
-        listFragment.add(networkPlayerFragment);
-        listFragment.add(exercise1Fragment);
+        classificationFragment.setViewPager(mViewPager);
+        networkPlayerFragment.setViewPager(mViewPager);
+        exercise1Fragment.setViewPager(mViewPager);
+        exercise2Fragment.setViewPager(mViewPager);
+        exercise3Fragment.setViewPager(mViewPager);
+        mListFragment.add(classificationFragment);
+        mListFragment.add(networkPlayerFragment);
+        mListFragment.add(exercise1Fragment);
+        mListFragment.add(exercise2Fragment);
+        mListFragment.add(exercise3Fragment);
 
-        adapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+        mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
             @Override
             public int getCount() {
                 // TODO Auto-generated method stub
-                return listFragment.size();
+                return mListFragment.size();
             }
 
             @Override
             public Fragment getItem(int arg0) {
                 // TODO Auto-generated method stub
-                return listFragment.get(arg0);
+                return mListFragment.get(arg0);
             }
         };
 
-        viewPager.setAdapter(adapter);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setCurrentItem(1);
     }
 
     @Override
@@ -97,8 +105,6 @@ public class Control extends FragmentActivity implements OnClickListener,
 
     @Override
     public void onArgumentPassed(Bundle bundle) {
-        // networkPlayerFragment.setData(bundle);
-
         if (!networkPlayerFragment.isAdded()) {
             networkPlayerFragment.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
